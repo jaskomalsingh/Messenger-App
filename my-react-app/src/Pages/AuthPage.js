@@ -1,50 +1,34 @@
 import React, { useState } from 'react';
-import '../Styles/AuthPage.css'; // Import the CSS file for styling
+import { useNavigate } from 'react-router-dom';
+import '../Styles/AuthPage.css'; // Make sure this path is correct
 
 function AuthPage() {
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    console.log('Login with: ', loginEmail, loginPassword);
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!username) return; // Check if username is empty
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    console.log('Signup with: ', signupEmail, signupPassword);
+    localStorage.setItem('Username', username); // Save username in local storage
+    navigate('/chat'); // Navigate to the chat page
   };
 
   return (
     <div className="auth-container">
       <div className="login-box">
-        <form onSubmit={handleLogin}>
-          <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email:</label>
-            <input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} />
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+            />
           </div>
-          <div className="form-group">
-            <label>Password:</label>
-            <input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} />
-          </div>
-          <button type="submit">Login</button>
-        </form>
-      </div>
-      <div className="signup-box">
-        <form onSubmit={handleSignup}>
-          <h2>Signup</h2>
-          <div className="form-group">
-            <label>Email:</label>
-            <input type="email" value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} />
-          </div>
-          <div className="form-group">
-            <label>Password:</label>
-            <input type="password" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} />
-          </div>
-          <button type="submit">Signup</button>
+          <button type="submit">Enter Chat</button>
         </form>
       </div>
     </div>
