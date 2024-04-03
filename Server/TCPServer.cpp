@@ -7,39 +7,45 @@
 #include <thread>
 #include <vector>
 #include <mutex>
+#include <memory> // For std::shared_ptr and std::make_shared
 
 namespace beast = boost::beast;
 namespace websocket = beast::websocket;
 namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp;
 
-std::vector<websocket::stream<tcp::socket>> clients;
+// Change the type of clients to store std::shared_ptr to WebSocket streams
+std::vector<std::shared_ptr<websocket::stream<tcp::socket>>> clients;
 std::mutex clientsMutex;
 
 void broadcast_message(const std::string& message) {
     std::lock_guard<std::mutex> guard(clientsMutex);
     for (auto& ws : clients) {
-        ws.write(net::buffer(message));
+        if (ws->is_open()) { // Check if the WebSocket is still open
+            ws->write(net::buffer(message));
+        }
     }
+    // Remove closed WebSocket connections
+    clients.erase(std::remove_if(clients.begin(), clients.end(), 
+        [](const auto& ws) { return !ws->is_open(); }), clients.end());
 }
-
 
 void do_session(tcp::socket socket) {
     try {
-        websocket::stream<tcp::socket> ws{std::move(socket)};
+        auto ws = std::make_shared<websocket::stream<tcp::socket>>(std::move(socket)); // Use shared_ptr
         
         std::cout << "Attempting WebSocket handshake..." << std::endl;
-        ws.accept();
+        ws->accept();
         std::cout << "WebSocket handshake successful." << std::endl;
 
         {
             std::lock_guard<std::mutex> guard(clientsMutex);
-            clients.push_back(std::move(ws));
+            clients.push_back(ws); // No need to std::move
         }
 
         for(;;) {
             beast::flat_buffer buffer;
-            clients.back().read(buffer);
+            ws->read(buffer); // Use the shared_ptr directly
             std::string message = beast::buffers_to_string(buffer.data());
 
             std::cout << "Message received: " << message << std::endl;
@@ -53,6 +59,7 @@ void do_session(tcp::socket socket) {
     } catch(std::exception const& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
+    // No need to manually remove the WebSocket from the clients vector; it's handled in broadcast_message
 }
 
 int main(int argc, char* argv[]) {
