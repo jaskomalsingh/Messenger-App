@@ -61,8 +61,13 @@ function ChatroomPage() {
 
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        const chatMessagesContainer = messagesEndRef.current?.parentNode;
+        if (chatMessagesContainer) {
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
     };
+    
+    
 
     useEffect(scrollToBottom, [messages]);
 

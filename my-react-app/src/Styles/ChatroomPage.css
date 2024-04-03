@@ -55,6 +55,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse; /* Change direction to column-reverse */
+  overflow-y: auto; /* Allows scrolling */
   padding: 10px;
   gap: 10px;
   border: 1px solid #ccc;
