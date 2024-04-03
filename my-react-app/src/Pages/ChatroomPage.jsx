@@ -16,7 +16,7 @@ function ChatroomPage() {
 
 
     useEffect(() => {
-        const newSocket = new WebSocket('ws://localhost:8080');
+        const newSocket = new WebSocket('ws://34.130.10.90:8080');
 
         newSocket.onopen = () => {
             console.log("WebSocket connection established");
