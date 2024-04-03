@@ -18,11 +18,13 @@
 }
 
 .chat-area {
-  flex: 1;
   display: flex;
   flex-direction: column;
   background: #eaeaea;
-  padding: 20px;
+  padding: 2vh;
+  max-height: 98vh; /* Set the maximum height of the chat area */
+  min-height: 98vh; /* Set the maximum height of the chat area */
+  overflow-y: auto; /* Enable scrolling within the chat area */
 }
 
 .chatroom-entry {
