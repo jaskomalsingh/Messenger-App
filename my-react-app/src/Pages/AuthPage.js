@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/AuthPage.css'; // Make sure this path is correct
+import Image from '../Images/liveChat.png';
 
 function AuthPage() {
   const [username, setUsername] = useState('');
@@ -17,6 +18,9 @@ function AuthPage() {
   return (
     <div className="auth-container">
       <div className="login-box">
+      <div className="logo-container">
+          <img src={ Image } alt="Instagram" className="logo" />
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
