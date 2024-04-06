@@ -6,6 +6,7 @@ import pikachuGif from '../Gifs/pikachu.gif';
 import runGif from '../Gifs/run.gif';
 import simpsonsGif from '../Gifs/simpsons.gif';
 import southparkGif from '../Gifs/southpark.gif';
+import { useNavigate } from 'react-router-dom';
 
 function ChatroomPage() {
     const [socket, setSocket] = useState(null);
@@ -13,6 +14,7 @@ function ChatroomPage() {
     const [currentMessage, setCurrentMessage] = useState({ text: '', gif: '' });
     const messagesEndRef = useRef(null);
     const [isGifModalOpen, setIsGifModalOpen] = useState(false); // State to control the GIF modal visibility
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -33,6 +35,8 @@ function ChatroomPage() {
 
         newSocket.onclose = (event) => {
             console.log("WebSocket connection closed:", event);
+            navigate('/');
+            alert("Connection closed. Please refresh the page to reconnect.");            
         };
 
         setSocket(newSocket);
